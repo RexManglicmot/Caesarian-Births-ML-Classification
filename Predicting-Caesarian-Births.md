@@ -40,10 +40,12 @@ Things still need to do:
 
 </n>
 <center>
+
 ![](https://i.dailymail.co.uk/1s/2022/08/23/09/61636629-11136659-Controversial_The_harrowing_scene_during_the_Game_Of_Thrones_pre-a-20_1661244418570.jpg)
+
 </center>
 
-</n> </n>
+</n>
 
 A Caesarian section (C-section) is a type of surgery used to delivery a
 baby. An incision is made through the woman’s abdomen and uterus to
@@ -678,9 +680,8 @@ style="width:50.0%" /> </n>
 
 Here are a few concepts for AUC and ROC.
 
-</n> <img
-src="https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg"
-style="width:50.0%" />
+</n>
+![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg)
 
 </center>
 

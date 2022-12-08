@@ -18,12 +18,12 @@ Things still need to do:
 4. Check grammar.
 
 ### Introduction
+
 </n>
 <center>
 ![](https://i.dailymail.co.uk/1s/2022/08/23/09/61636629-11136659-Controversial_The_harrowing_scene_during_the_Game_Of_Thrones_pre-a-20_1661244418570.jpg)
-</center>
 
-</n>
+</center>
 </n>
 
 A Caesarian section (C-section) is a type of surgery used to delivery a baby. An incision is made through the woman's abdomen and uterus to bring forth the baby instead of the birth via the vaginal delivery.^[https://www.mayoclinic.org/tests-procedures/c-section/about/pac-20393655.]
@@ -298,11 +298,14 @@ Now, let's validate the model and plot it's AUC-ROC curve. Before that, let's go
 
 Here are a few concepts for AUC and ROC.
 
+
+
 </n>
-![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg){width=50%}
+![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg)
 
 </center>
 </n>
+
 
 AUC-ROC stands for "Area Under the Curve of Receiver Characteristic Operator" that helps us understand how well our ML classifier is performing.^[https://www.analyticsvidhya.com/blog/2020/06/auc-roc-curve-machine-learning/] ROC curve is an evaluation metric for binary classification and AUC is a evaluation of a classifier to distinguish between classes. 
 
