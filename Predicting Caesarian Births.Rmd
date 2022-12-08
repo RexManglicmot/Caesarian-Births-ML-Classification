@@ -2,7 +2,7 @@
 title: "Predicting Caesarian Births"
 Author: "Rex Manglicmot"
 output: 
-  html_notebook: 
+  github_document: 
     toc: yes
 ---
 ### Status: Continuing Working Document
