@@ -26,6 +26,7 @@ Things still need to do:
 </center>
 </n>
 
+
 A Caesarian section (C-section) is a type of surgery used to delivery a baby. An incision is made through the woman's abdomen and uterus to bring forth the baby instead of the birth via the vaginal delivery.^[https://www.mayoclinic.org/tests-procedures/c-section/about/pac-20393655.]
 
 While C-sections can be elected, there are some cases where it is not. According to the Mayo Clinic^[https://www.mayoclinic.org/tests-procedures/c-section/about/pac-20393655], a C-section is recommended under various reasons such as the baby is in distress, difficulties during labor, baby is in an unusual position, etc. Further, the need for a first-time C-section is not clear until only after labor starts. 
@@ -300,11 +301,13 @@ Here are a few concepts for AUC and ROC.
 
 
 
+
 </n>
 ![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg)
 
 </center>
 </n>
+
 
 
 AUC-ROC stands for "Area Under the Curve of Receiver Characteristic Operator" that helps us understand how well our ML classifier is performing.^[https://www.analyticsvidhya.com/blog/2020/06/auc-roc-curve-machine-learning/] ROC curve is an evaluation metric for binary classification and AUC is a evaluation of a classifier to distinguish between classes. 
