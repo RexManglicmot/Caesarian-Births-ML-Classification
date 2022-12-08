@@ -1,3 +1,3 @@
 ## Caesarian-Births-ML-Classification
 
-Please see the **MD** file for the rendered version
+Please see the **md** file for the rendered version
