@@ -32,7 +32,9 @@ Things still need to do:
 2.  Ask for feedback on model and incorporate feedback.
 3.  Fill in missing sections to round out project.
 4.  Put in more theory on Random Forests. For example, like the cons.
-5.  Check grammar.
+5.  Figure out why the pics do not show on github_document but do in
+    Rstudio
+6.  Check grammar.
 
 ### Introduction
 
@@ -676,8 +678,9 @@ style="width:50.0%" /> </n>
 
 Here are a few concepts for AUC and ROC.
 
-</n>
-![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg)
+</n> <img
+src="https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg"
+style="width:50.0%" />
 
 </center>
 
