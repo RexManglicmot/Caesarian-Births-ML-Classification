@@ -1,0 +1,457 @@
+---
+title: "Predicting Caesarian Births"
+Author: "Rex Manglicmot"
+output: 
+  html_notebook: 
+    toc: yes
+---
+### Status: Continuing Working Document
+Hi everyone. I'm continuing building my data analysis and R skills. As such, I would love feedback to better improve this project via rexmanglicmot@gmail.com. Any mistakes and misrepresentation of the data are my own.
+
+Things still need to do:
+
+1. Figure out BUG in Logistic Regression Code. Afterwards do analysis of the model.
+2. Ask for feedback on model and incorporate feedback.
+3. Fill in missing sections to round out project.
+4. Put in more theory on Random Forests. For example, like the cons.
+4. Check grammar.
+
+### Introduction
+</n>
+<center>![](https://i.dailymail.co.uk/1s/2022/08/23/09/61636629-11136659-Controversial_The_harrowing_scene_during_the_Game_Of_Thrones_pre-a-20_1661244418570.jpg)</center>
+
+</n>
+</n>
+
+A Caesarian section (C-section) is a type of surgery used to delivery a baby. An incision is made through the woman's abdomen and uterus to bring forth the baby instead of the birth via the vaginal delivery.^[https://www.mayoclinic.org/tests-procedures/c-section/about/pac-20393655.]
+
+While C-sections can be elected, there are some cases where it is not. According to the Mayo Clinic^[https://www.mayoclinic.org/tests-procedures/c-section/about/pac-20393655], a C-section is recommended under various reasons such as the baby is in distress, difficulties during labor, baby is in an unusual position, etc. Further, the need for a first-time C-section is not clear until only after labor starts. 
+
+Therefore, predicting C-sections is crucial in not only to a woman's health but that of her baby. The purpose of this project is to use machine learning classification to predict whether a woman will undergo a C-section. In doing so, this will help prepare the mother and clinicians better prepare for C-sections. 
+
+The two models that I will be deploying are Random Forests and Logistic Regression, both of which are excellent models in this Supervised Learning project. These two were specifically chosen because the dependent variable, caesarian, is binary, 0 or 1. This means that linear regression models or models where the dependent variable is continuous cannot be used within this project.  
+
+This projected is broken down into the following chapters:
+
+1. Loading Libraries
+2. Cleaning the Data
+3. Exploratory Data Analysis
+4. Modeling: Random Forrest
+5. Modeling: Logistic Regression
+6. Limitations
+7. Conclusion
+
+A special acknowledgement to the University of California's Irvine online data repository^[https://archive.ics.uci.edu/ml/datasets/Caesarian+Section+Classification+Dataset] in which this dataset was recieged. Further, a special acknowledgement to Professors Muhammad Zain Amin and Amir Ali from the University of Engineering and Technology, Lahore, Pakistan for their paper^[ M.Zain Amin, Amir Ali.'Performance Evaluation of Supervised Machine Learning Classifiers for Predicting Healthcare Operational Decisions'.Machine Learning for Operational Decision Making, Wavy Artificial Intelligence Research Foundation, Pakistan, 2018] in which the dataset was created. 
+
+Attribute Information:
+
+1. Age: {22,26,28,27,32,36,33,23,20,29,25,37,24,18,30,40,31,19,21,35,17,38}
+2. Delivery Number: {1, 2, 3, 4}
+3. Delivery Time: {0,1,2}, where 0=timely, 1=premature, 2=latecomer
+4. Blood of Pressure: {2,1,0}, where 0=low, 1=normal, 2=high 
+5. Heart Problem: {1,0}, where 0=apt, 1=inept
+6. Caesarian {0,1}, where 0=No, 1=Yes
+
+
+### Loading Libraries
+```{r, warning=FALSE, message=FALSE}
+#load libraries
+library(tidyverse)
+library(dplyr)
+library(viridis)
+library(MASS)
+library(gganimate)
+library(randomForest)
+library(caret)
+
+#store dataset from UCI website into an object
+url <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/00472/caesarian.csv.arff'
+
+#load data via URL object
+data <-read.csv(url, header = FALSE)
+```
+
+Now, let's read the first few rows of the data.
+```{r Loading Libraries 1}
+#read first rows of the data
+head(data)
+```
+At first glance the data of the rows, the dataset is confusing. We need to look at the dataset more fully to get a better understanding of the data in order make following adjustments for analysis. Let's view the first 25 rows.
+
+```{r Load Libraries 2}
+#view the first 25 rows of the data
+head(data,25)
+```
+Now, we have a better understanding of the data. The first 8 rows tell us what the variables are and how they are noted down in the csv. For example, the age variable list values as integers and the rest of the variables (i.e., Heart Problem) are listed as factors. Therefore, the data is uncleaned and not formatted correctly.
+
+As we move into cleaning the data, it is best practice to store the changes into objects (data2-4), which would allow us to systematically troubleshoot the code if any coding issues arise. 
+
+Also, we see that some of the columns, 7:22, do not provide relevant information and have NAs in them, so let's start off by deleting those columns. Then, changing the names of the columns from "V" into their proper names. Finally, let's delete the first 8 rows since they wont be necessary.
+
+### Cleaning the Data
+```{r Cleaning 1}
+#Delete columns 7-22; they do not have meaning
+data2 <- data[-c(7:22)]
+
+#change column names to appropriate names
+#wanted to use another method other than colnames
+data3 <- data2 %>%
+  rename(age = V1, 
+        delivery = V2,
+        delivery_time = V3,
+        blood_pressure = V4,
+        heart_problem = V5,
+        caesarian = V6)
+
+#delete first 8 rows by range
+data4 <- data3[-(0:8),]
+
+#let's check the data if we cleaned accordingly
+head(data4, 10)
+```
+Now that the data is tidy, we need to check the structure of each variable and see if the they are labeled correctly according to the UCI website.
+```{r Cleaning 2}
+str(data4)
+```
+We see that variables are not labeled correctly. For example age is a character when it should be an integer and delivery is also a character which should be a factor. Let's change the aforementioned alongside other variables as listed on the UCI website.
+
+```{r Cleaning 3}
+#change variables into appropriate 
+data4$age <-as.integer(data4$age)
+data4$delivery <-as.factor(data4$delivery)
+data4$delivery_time <-as.factor(data4$delivery_time)
+data4$blood_pressure <-as.factor(data4$blood_pressure)
+data4$heart_problem <-as.factor(data4$heart_problem)
+data4$caesarian <-as.factor(data4$caesarian)
+
+#check to see if change is made
+str(data4)
+```
+Data4 looks good!
+
+Now, let's check if dataframe has any NA values through robust methods. We can count by sum, also across rows and down columns. 
+```{r Cleaning 4}
+#check for NA's
+sum(is.na(data4))
+
+#check NAs in columns
+colSums(is.na(data4))
+
+#check NAs in rows
+rowSums(is.na(data4))
+```
+We see that through each of the 3 methods, there are no NAs in our data. Thus, the data is now cleaned and ready for exploration. yay!
+
+### Exploratory Data Analysis
+Now, let's explore the data.
+```{r}
+ggplot(data4, aes(x=age, fill='red')) +
+  geom_histogram(bins = 10, color='purple', show.legend = FALSE) +
+  labs(x= "Woman's Age",
+       y= 'Count',
+       title = 'Age Distribution of Women during Childbirth 
+       Process') +
+  #create a mean line
+  geom_vline(aes(xintercept = mean(age)), color = 'black', size = 1) +
+  theme_bw()
+
+mean(data4$age)
+```
+Interesting age distribution overall. The shape looks bimodal. The mean of the data set is 28 years old as indicated by the solid black line.
+
+Now, let's go deeper and look at the summary statistics
+```{r}
+summary(data4$age)
+```
+The data looks evenly, almost taking the shape of a normal distribution but not quite because the distance difference between IQR3 and IQR1 to that of the median is not the same, 5 and 2, respectively. 
+
+Let's see the distribution for those women who had caesarian births vs those who did not.
+
+```{r}
+ggplot(data4, aes(x=age, color=caesarian, fill=caesarian)) +
+  geom_histogram(bins = 10, color='darkblue') +
+  theme_light() +
+  scale_fill_viridis(discrete = TRUE) +
+  labs(x= "Woman's Age",
+       y= 'Count',
+       title = 'Age Distribution of Women during Childbirth 
+       Process')
+  #gganimate
+  #  transition_states(
+  #   gear,
+  #   transition_length = 2,
+  #   state_length = 1
+  # ) +
+  # enter_fade() + 
+  # exit_shrink() +
+  # ease_aes('linear')
+
+```
+Now, we see that there tends to be more women who did not have caesarian births vs those who did not. It would be interesting to see if age does play a role in predicting caesarian births.
+
+Age is the only variable that is continuous and the rest of the variables are factors. We could possibly graph the counts of each of the remaining variables to reveal the count, but I think it would be more interesting to run the classification.
+
+So, let's run two classification experiments: Random Forests and Logisitc Regression. But first, let's go deeper in the concept of Random Forests. 
+
+### Modeling: Random Forests
+Random Forests (RF) creates an array of decision trees based on a random selection of your data. RF is one way of classification of the dependent variable (in our case, caesarian). The random selection includes various subsets of data, where each subset obtain observations of another subset. These subsets are called random trees or (decision trees). When you have many trees, this is called a "random forest."
+
+<center>
+![](https://www.tibco.com/sites/tibco/files/media_entity/2021-05/random-forest-diagram.svg){width=50%}
+</center>
+
+The theory behind this is that many of the trees are making correct predictions for most of the data, and that some of the trees are making mistakes at different parts of the tree. For example, if there are a total of 5 Trees, and if Tree1-4 predicts the classification to be "A" 4 times and Tree 5 predicsd classification to be "B" 1 time, then the correct classification of the dependent variable is likely to be A than B, 4:1. In essence, RF predicts classification based on **majority votes** of the trees.
+
+The great aspect of RF is that it avoids overfitting, where the model pays great attention to specific details of the dataset that it was specifically trained on and as a result the model predicts well on the training data, but not predict so well on the test data (which is the point of RF).
+
+With our data, we run a Random Forrest to see of this model correctly predicts whether or not a women has a caesarian procedure. Because the dependent vraible is a factor, we can do classification. (If the dependent variable was continuous, we can do a regression; this is not the case.)
+
+Recall that: 
+
+* 0 = No Caesarian Birth
+* 1 = Caesarian Birth
+
+Let's look at the data one more time.
+```{r}
+#look at the data again to see the structure of it
+str(data4)
+```
+We see that the caesarian is already converted into a factor variable from previous data cleaning section.
+
+Let's see the data's caesarian split.
+```{r}
+#let's count  observations for caesarian via a table
+table(data4$caesarian)
+```
+The data seems somewhat evenly split with 34 women not undergoing caesarian while 46 women underwent caesarian. This is great news because we have a good amount of observations for both values for the data splitting.
+
+Now, let's move onto data splitting. But first, let's go over briefly on why we split the data.
+<center>
+
+![](https://miro.medium.com/max/656/0*FKrWuLRbB_MiEIKh)
+</center>
+
+Recall when predicting classification we need to split the data into training and testing datasets (the norm is typically a 80/20 split). We will then use the train data to create a model (a mathematical formula). The test data will run against the model to get predicted y-values (will this obervation have a caesarian birth, 0 or 1). We will then compare the actual y-values to the predicted y-values to determine if the model was accurate. We use the results of to validate the model. This is important because if the model is robust, it can be used to predict caesarian outcomes with datasets beyond what we originally have. 
+
+```{r}
+#set seed such that the data is reproducible
+set.seed(123)
+
+#split the data into 80 (training) and 20 (test)
+sample <-sample(2, nrow(data4), replace=TRUE, prob=c(0.8, 0.2))
+
+#create train and data objects
+#this is the first and second we created and recall the blank space after the comma means we want all the columns
+train <-data4[sample==1,]
+test <- data4[sample==2,]
+
+#count the number of rows of each to determine if that number is the same of the data4 set.
+nrow(train)
+nrow(test)
+nrow(train) + nrow(test)
+```
+Looking at the test and train objects we see that the test has 65 observations and the train has 15 observations which add up to 80 observations from the original data4 set. 
+
+Great! Now lets, do Random Forests! 
+```{r}
+#set seed such that the model is reproducible
+set.seed(456)
+
+#create the RF model. Remember that the dot after the tibble means we want all the varaibles. 
+rf <- randomForest(caesarian ~., data=data4)
+print(rf)
+```
+Let's break the output down. 
+
+We called random forests function on caesarian against all the variables within the data4 dataset. Because of the dependent variable is a binary, the type of random forest is classification. By default, the number of trees is 500. "No. of variables tried at each split: 2" is mtry, which the is the square root of p, which is  the number of variables. Since the number of variables we had was 6, the closest integer is 2 and not 3.
+
+OOB is the "out of bag" which is a score validating the model. In this case, the score is 40%  which is not good. Our model has 60% accuracy.
+<center>
+![](https://glassboxmedicine.files.wordpress.com/2019/02/confusion-matrix.png){width=65%}
+</center>
+Looking at the confusion matrix. The rf model predicted 17 correct and 15 incorrect for observations classified as 0 (No Caesarian Births). The rf model predicted 31 correct and 17 incorrect for observations classified as 1 (Caesarian Births). The rf model had a higher error in predicting the 0 classification (50% error) than the 1 classification (32% error). 
+
+Let's use the model to predict the train dataset.
+```{r}
+# Prediction of the train dataset. 
+predict1 <- predict(rf, train)
+confusionMatrix(predict1, train$caesarian)
+```
+Looking at the confusion matrix. The rf model predicted 26 correct and 1 incorrect for observations classified as 0 (No Caesarian Births). The rf model predicted 34 correct and 4 incorrect for observations classified as 1 (Caesarian Births). The model had a 92% accuracy.
+
+Now, let's use the rf model on the test dataset. 
+```{r}
+#predict suing test data
+predict2 <- predict(rf, test)
+confusionMatrix(predict2, test$caesarian)
+```
+
+Looking at the confusion matrix. The rf model predicted 5 correct and 2 incorrect for observations classified as 0 (No Caesarian Births). The rf model predicted 8 correct and 0 incorrect for observations classified as 1 (Caesarian Births). The model accuracy decreased to 87%. 
+
+Now, let's validate the model and plot it's AUC-ROC curve. Before that, let's go in more the concepts.
+<center>
+![](https://miro.medium.com/max/864/1*PU3_4LheadpGcpl6daO1mA.png){width=50%}
+</n>
+
+Here are a few concepts for AUC and ROC.
+
+</n>
+![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg)
+
+</center>
+</n>
+
+AUC-ROC stands for "Area Under the Curve of Receiver Characteristic Operator" that helps us understand how well our ML classifier is performing.^[https://www.analyticsvidhya.com/blog/2020/06/auc-roc-curve-machine-learning/] ROC curve is an evaluation metric for binary classification and AUC is a evaluation of a classifier to distinguish between classes. 
+
+The y-axis shows the True Positive Rate (TPR) ("Sensitivity"), which is explained mathematically as TP/(TP+FN), and in essence tells us what proportion of no caesarian births were correctly classified.
+
+The x-axis shows the False Positive Rate (FPR) ("1- Specificity"), which is explained mathematically as FP/(FP+TN), and in essence tells us what proportion of the caesarian births were incorrectly classified. 
+
+The diagonal line shows when the True Positive Rate = False Positive Rate. 
+
+When the threshold for probability (and then classification) changes, it produces a new confusion matrix and corresponding TPR and FPR and creates a ROC graph. **ROC** summarizes all of the confusion matrices that each threshold produced.
+
+```{r, warning=FALSE, message=FALSE}
+#load library
+library(pROC)
+
+#redo data for prob
+predictforROC <- predict(rf, test, type='prob')
+
+#predict rep. of caesarian cases
+ROC_rf <- roc(test$caesarian, predictforROC[,2])
+ROC_rf_AUC <- auc(ROC_rf)
+```
+
+
+```{r}
+#plot 
+plot(ROC_rf , main='ROC for Random Forest (Green)', col='green')
+paste('AUC Random Forrest', ROC_rf_AUC)
+```
+Looking at the ROC curve and AUC (96%), it seems our model is excellent in classifying caesarian births vs non-caesarian births. 
+
+### Modeling: Logistic Regression
+In logistic regression we want to predict the probability of an outcome from occurring, using the case of 0 (no probable chance; No Caesarian Births) to 1 (definite chance; Caesarian Births).
+
+The reason why a linear regression is not the best choice because:
+
+1. A regression line (straight line) would go through the data points and not reflect the shape of the data.
+2. The regression line would go beyond plus and minus infinity and not reflect the probability of occurrence, which is defined between 0 and 1.
+3. The goal of logistic regression is not to estimate the value of the variable. 
+
+Because we want to stay between 0 and 1, we want to use a logistic function, which has a sigmoidal curve because of the shape, if an observation is >50% of the curve, it will be classified as 1 (definite chance) and if an observation is <50% of the curve, it will be classified as 0 (no probable chance).
+
+Similar to multiple linear regression, logistic regressions work with continuous data and discrete data (needs to be converted into a factor). We can also test to see if each variable is useful in predicting the dependent variable. In other words, we can slice variables out. (Note: we cannot compare a complicated model to a simple model).
+
+First, let's check if there is a observations for each caesarian value by creating a table.
+```{r Cleaning 5}
+#build a table for Caesarian and the other variables
+xtabs(~caesarian + delivery, data=data4)
+xtabs(~caesarian + delivery_time, data=data4)
+xtabs(~caesarian + blood_pressure, data=data4)
+xtabs(~caesarian + heart_problem, data=data4)
+```
+We see that in delivery there are zero values when caesarian=0, which could lead to problems in accurate modeling. Otherwise, there are values for each variable. 
+
+First, let's create a simple model. Let's use the age variable. 
+```{r}
+#create a simple model
+#recall, that family is binomial because we are dealing with logistic regression
+#and we use glm instead of lm
+log1 <-glm(caesarian ~ age, data=data4, family='binomial')
+summary(log1)
+```
+Basked on this model, we see that age is not significant and does not play a role in predicting whether a woman has a caesarian brith. Now let's try with all the variables. 
+
+```{r}
+#model Caesarian against all remaining variables
+log2 <-glm(caesarian ~., data=data4, family='binomial')
+
+#see what the model looks like with a summary funciton
+summary(log2)
+```
+
+Now, we want to remove any variables that are not statistically signficant that do not provide any value to the overall model. Instead of slicing away manually and gingo back and forth with the model. We can call the function stepAIC which would automate the process for us and choose the best model (ideally the one with the lowest AIC).
+
+```{r}
+# create a model
+log3 <- glm(caesarian ~ ., family= 'binomial', data=data4) %>%
+  stepAIC(trace=TRUE)
+
+summary(log3)
+```
+Now, we the necessary variables needed. Let's remove those variables and store it into another object, data5.
+
+```{r}
+#drop age and delivery and store it into another object
+data5<- data4[,-c(1:2)]
+
+#print first few rows
+head(data5, 10)
+```
+Great, now that we have our ideal dataset, data5. Let's begin to split the data (80/20) and create train2 and test2. 
+```{r}
+#set seed to make results reproducible
+set.seed(564)
+
+#split the data into 80(training) and 20(test)
+sample_log <-sample(2, nrow(data5), replace=TRUE, prob=c(0.8, 0.2))
+
+#create train and data objects
+#this is the first and second we created and recall the blank #space means we want all the columns
+train2 <-data5[sample_log==1,]
+test2 <- data5[sample_log==2,]
+```
+
+Now, let's create the logistic model. 
+```{r}
+set.seed(1584)
+
+#build model
+log4 <-glm(caesarian ~ delivery_time + blood_pressure + heart_problem, data=train2, family = 'binomial')
+summary(log4)
+
+#prediction for train2
+log_pred <-predict(log4, data=train2, type='response') 
+
+#convert prob to 1 or 0 and view via confusion matrix
+log_pred1 <- ifelse(log_pred>0.5, 1, 0)
+
+#confusion matrix
+table_log <-table(Predicted = log_pred1, Actual=train2$caesarian)
+print(table_log)
+
+#Calculate misclassification error
+1 - sum(diag(table_log))/sum(table_log)
+```
+Classifications is 28% in this training model
+
+```{r}
+#prediction for test2
+log_pred2 <- predict(log4, data=test2, type='response') 
+
+log_pred3 <- ifelse(log_pred2>0.5, 1, 0)
+
+#There is a BUG here. Need to figure it out. 
+#confusion matrix
+#table_log2 <- table(log_pred3, test2$caesarian) #this line of code DOES NOT WORK.
+#print(table_log2)
+```
+
+
+### Limitations
+One limitation from this project is that classification of caesarian births are being deployed by two models: Random Forests and Logistic Regression. Other ML models can be deployed such as KNN. By a comparing and contrasting of a greater set of models could be advantageous. A follow-up experiment could to include an array of ML models. 
+
+Another limitation is that with the RF, the default number of trees is 500. Another followup we can do is fine-tuning where we get the appropriate number of trees for the model.
+
+
+### Conclusion
+Will finish this section once the above sections are complete. 
+
+
+
+
+
+
+
