@@ -11,7 +11,7 @@ Hi everyone. I'm continuing building my data analysis and R skills. As such, I w
 
 Things still need to do/Questions:
 
-* Figure out **BUG** in Logistic Regression Code. Afterwards do analysis of the model.
+* Figure out **BUG** in Logistic Regression Code and afterwards do analysis of the model.
 * Ask for feedback on model and incorporate feedback.
 * Fill in missing sections to round out project.
 * Put in more theory on Random Forests and Logistic Regression + illustrations
@@ -240,7 +240,7 @@ Now, let's move onto data splitting. But first, let's go over briefly on why we 
 
 </center>
 
-Recall when predicting classification we need to split the data into training and testing datasets (the norm is typically a 80/20 split). We will then use the train data to create a model (a mathematical formula). The test data will run against the model to get predicted y-values (will this obervation have a caesarian birth, 0 or 1). We will then compare the actual y-values to the predicted y-values to determine if the model was accurate. We use the results of to validate the model. This is important because if the model is robust, it can be used to predict caesarian outcomes with datasets beyond what we originally have. 
+Recall when predicting classification we need to split the data into training and testing datasets (the norm is typically a 80/20 split). We will then use the train data to create a model (a mathematical formula). The test data will run against the model to get predicted y-values (will this observation have a caesarian birth, 0 or 1). We will then compare the actual y-values to the predicted y-values to determine if the model was accurate. We use the results of to validate the model. This is important because if the model is robust, it can be used to predict caesarian outcomes with datasets beyond what we originally have. 
 
 ```{r}
 #set seed such that the data is reproducible

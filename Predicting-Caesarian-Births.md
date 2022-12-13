@@ -31,7 +31,7 @@ data are my own.
 
 Things still need to do/Questions:
 
--   Figure out **BUG** in Logistic Regression Code. Afterwards do
+-   Figure out **BUG** in Logistic Regression Code and afterwards do
     analysis of the model.
 -   Ask for feedback on model and incorporate feedback.
 -   Fill in missing sections to round out project.
@@ -492,7 +492,7 @@ Recall when predicting classification we need to split the data into
 training and testing datasets (the norm is typically a 80/20 split). We
 will then use the train data to create a model (a mathematical formula).
 The test data will run against the model to get predicted y-values (will
-this obervation have a caesarian birth, 0 or 1). We will then compare
+this observation have a caesarian birth, 0 or 1). We will then compare
 the actual y-values to the predicted y-values to determine if the model
 was accurate. We use the results of to validate the model. This is
 important because if the model is robust, it can be used to predict
