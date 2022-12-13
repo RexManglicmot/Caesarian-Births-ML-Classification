@@ -5,19 +5,19 @@ output:
   github_document: 
     toc: yes
 ---
-### Status: Continuing Working Document
+
+## Status: Continuing Working Document
 Hi everyone. I'm continuing building my data analysis and R skills. As such, I would love feedback to better improve this project via rexmanglicmot@gmail.com. Any mistakes and misrepresentation of the data are my own.
 
-Things still need to do:
+Things still need to do/Questions:
 
-1. Figure out BUG in Logistic Regression Code. Afterwards do analysis of the model.
-2. Ask for feedback on model and incorporate feedback.
-3. Fill in missing sections to round out project.
-4. Put in more theory on Random Forests. For example, like the cons.
-5. Figure out why the pics do not show on github_document but do in Rstudio
-4. Check grammar.
+* Figure out **BUG** in Logistic Regression Code. Afterwards do analysis of the model.
+* Ask for feedback on model and incorporate feedback.
+* Fill in missing sections to round out project.
+* Put in more theory on Random Forests and Logistic Regression + illustrations
+* Check grammar.
 
-### Introduction
+## Introduction
 
 </n>
 <center>
@@ -37,15 +37,17 @@ The two models that I will be deploying are Random Forests and Logistic Regressi
 
 This projected is broken down into the following chapters:
 
-1. Loading Libraries
-2. Cleaning the Data
-3. Exploratory Data Analysis
-4. Modeling: Random Forrest
-5. Modeling: Logistic Regression
-6. Limitations
-7. Conclusion
+1. Loading the Libraries
+2. Loading the Data
+3. Cleaning the Data
+4. Exploratory Data Analysis
+5. Modeling: Random Forest
+6. Modeling: Logistic Regression
+7. Limitations
+8. Conclusion
+9. Inspiration for this project
 
-A special acknowledgement to the University of California's Irvine online data repository^[https://archive.ics.uci.edu/ml/datasets/Caesarian+Section+Classification+Dataset] in which this dataset was recieged. Further, a special acknowledgement to Professors Muhammad Zain Amin and Amir Ali from the University of Engineering and Technology, Lahore, Pakistan for their paper^[ M.Zain Amin, Amir Ali.'Performance Evaluation of Supervised Machine Learning Classifiers for Predicting Healthcare Operational Decisions'.Machine Learning for Operational Decision Making, Wavy Artificial Intelligence Research Foundation, Pakistan, 2018] in which the dataset was created. 
+A special acknowledgement to the University of California's Irvine online data repository^[https://archive.ics.uci.edu/ml/datasets/Caesarian+Section+Classification+Dataset] in which this dataset was recieved. Further, a special acknowledgement to Professors Muhammad Zain Amin and Amir Ali from the University of Engineering and Technology, Lahore, Pakistan for their paper^[ M.Zain Amin, Amir Ali.'Performance Evaluation of Supervised Machine Learning Classifiers for Predicting Healthcare Operational Decisions'.Machine Learning for Operational Decision Making, Wavy Artificial Intelligence Research Foundation, Pakistan, 2018] in which the dataset was created. 
 
 Attribute Information:
 
@@ -56,18 +58,20 @@ Attribute Information:
 5. Heart Problem: {1,0}, where 0=apt, 1=inept
 6. Caesarian {0,1}, where 0=No, 1=Yes
 
-
-### Loading Libraries
+## Loading the Libraries
 ```{r, warning=FALSE, message=FALSE}
 #load libraries
 library(tidyverse)
 library(dplyr)
 library(viridis)
 library(MASS)
-library(gganimate)
+#library(gganimate)
 library(randomForest)
 library(caret)
+```
 
+## Loading the Data
+```{r, warning=FALSE, message=FALSE}
 #store dataset from UCI website into an object
 url <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/00472/caesarian.csv.arff'
 
@@ -83,8 +87,8 @@ head(data)
 At first glance the data of the rows, the dataset is confusing. We need to look at the dataset more fully to get a better understanding of the data in order make following adjustments for analysis. Let's view the first 25 rows.
 
 ```{r Load Libraries 2}
-#view the first 25 rows of the data
-head(data,25)
+#view the first 15 rows of the data
+head(data,15)
 ```
 Now, we have a better understanding of the data. The first 8 rows tell us what the variables are and how they are noted down in the csv. For example, the age variable list values as integers and the rest of the variables (i.e., Heart Problem) are listed as factors. Therefore, the data is uncleaned and not formatted correctly.
 
@@ -92,7 +96,7 @@ As we move into cleaning the data, it is best practice to store the changes into
 
 Also, we see that some of the columns, 7:22, do not provide relevant information and have NAs in them, so let's start off by deleting those columns. Then, changing the names of the columns from "V" into their proper names. Finally, let's delete the first 8 rows since they wont be necessary.
 
-### Cleaning the Data
+## Cleaning the Data
 ```{r Cleaning 1}
 #Delete columns 7-22; they do not have meaning
 data2 <- data[-c(7:22)]
@@ -131,7 +135,7 @@ data4$caesarian <-as.factor(data4$caesarian)
 #check to see if change is made
 str(data4)
 ```
-Data4 looks good!
+data4 looks good!
 
 Now, let's check if dataframe has any NA values through robust methods. We can count by sum, also across rows and down columns. 
 ```{r Cleaning 4}
@@ -146,7 +150,7 @@ rowSums(is.na(data4))
 ```
 We see that through each of the 3 methods, there are no NAs in our data. Thus, the data is now cleaned and ready for exploration. yay!
 
-### Exploratory Data Analysis
+## Exploratory Data Analysis
 Now, let's explore the data.
 ```{r}
 ggplot(data4, aes(x=age, fill='red')) +
@@ -197,7 +201,7 @@ Age is the only variable that is continuous and the rest of the variables are fa
 
 So, let's run two classification experiments: Random Forests and Logisitc Regression. But first, let's go deeper in the concept of Random Forests. 
 
-### Modeling: Random Forests
+## Modeling: Random Forests
 Random Forests (RF) creates an array of decision trees based on a random selection of your data. RF is one way of classification of the dependent variable (in our case, caesarian). The random selection includes various subsets of data, where each subset obtain observations of another subset. These subsets are called random trees or (decision trees). When you have many trees, this is called a "random forest."
 
 <center>
@@ -233,6 +237,7 @@ Now, let's move onto data splitting. But first, let's go over briefly on why we 
 <center>
 
 ![](https://miro.medium.com/max/656/0*FKrWuLRbB_MiEIKh)
+
 </center>
 
 Recall when predicting classification we need to split the data into training and testing datasets (the norm is typically a 80/20 split). We will then use the train data to create a model (a mathematical formula). The test data will run against the model to get predicted y-values (will this obervation have a caesarian birth, 0 or 1). We will then compare the actual y-values to the predicted y-values to determine if the model was accurate. We use the results of to validate the model. This is important because if the model is robust, it can be used to predict caesarian outcomes with datasets beyond what we originally have. 
@@ -300,10 +305,10 @@ Now, let's validate the model and plot it's AUC-ROC curve. Before that, let's go
 Here are a few concepts for AUC and ROC.
 
 
-
-
 </n>
+
 ![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg)
+
 
 </center>
 </n>
@@ -340,7 +345,7 @@ paste('AUC Random Forrest', ROC_rf_AUC)
 ```
 Looking at the ROC curve and AUC (96%), it seems our model is excellent in classifying caesarian births vs non-caesarian births. 
 
-### Modeling: Logistic Regression
+## Modeling: Logistic Regression
 In logistic regression we want to predict the probability of an outcome from occurring, using the case of 0 (no probable chance; No Caesarian Births) to 1 (definite chance; Caesarian Births).
 
 The reason why a linear regression is not the best choice because:
@@ -449,17 +454,16 @@ log_pred3 <- ifelse(log_pred2>0.5, 1, 0)
 ```
 
 
-### Limitations
+## Limitations
 One limitation from this project is that classification of caesarian births are being deployed by two models: Random Forests and Logistic Regression. Other ML models can be deployed such as KNN. By a comparing and contrasting of a greater set of models could be advantageous. A follow-up experiment could to include an array of ML models. 
 
 Another limitation is that with the RF, the default number of trees is 500. Another followup we can do is fine-tuning where we get the appropriate number of trees for the model.
 
 
-### Conclusion
+## Conclusion
 Will finish this section once the above sections are complete. 
 
-
-
+## Inspiration for this project
 
 
 

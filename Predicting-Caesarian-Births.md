@@ -5,8 +5,10 @@ Predicting Caesarian Births
     id="toc-status-continuing-working-document">Status: Continuing Working
     Document</a>
 -   <a href="#introduction" id="toc-introduction">Introduction</a>
--   <a href="#loading-libraries" id="toc-loading-libraries">Loading
-    Libraries</a>
+-   <a href="#loading-the-libraries" id="toc-loading-the-libraries">Loading
+    the Libraries</a>
+-   <a href="#loading-the-data" id="toc-loading-the-data">Loading the
+    Data</a>
 -   <a href="#cleaning-the-data" id="toc-cleaning-the-data">Cleaning the
     Data</a>
 -   <a href="#exploratory-data-analysis"
@@ -17,26 +19,27 @@ Predicting Caesarian Births
     id="toc-modeling-logistic-regression">Modeling: Logistic Regression</a>
 -   <a href="#limitations" id="toc-limitations">Limitations</a>
 -   <a href="#conclusion" id="toc-conclusion">Conclusion</a>
+-   <a href="#inspiration-for-this-project"
+    id="toc-inspiration-for-this-project">Inspiration for this project</a>
 
-### Status: Continuing Working Document
+## Status: Continuing Working Document
 
 Hi everyone. I’m continuing building my data analysis and R skills. As
 such, I would love feedback to better improve this project via
 <rexmanglicmot@gmail.com>. Any mistakes and misrepresentation of the
 data are my own.
 
-Things still need to do:
+Things still need to do/Questions:
 
-1.  Figure out BUG in Logistic Regression Code. Afterwards do analysis
-    of the model.
-2.  Ask for feedback on model and incorporate feedback.
-3.  Fill in missing sections to round out project.
-4.  Put in more theory on Random Forests. For example, like the cons.
-5.  Figure out why the pics do not show on github_document but do in
-    Rstudio
-6.  Check grammar.
+-   Figure out **BUG** in Logistic Regression Code. Afterwards do
+    analysis of the model.
+-   Ask for feedback on model and incorporate feedback.
+-   Fill in missing sections to round out project.
+-   Put in more theory on Random Forests and Logistic Regression +
+    illustrations
+-   Check grammar.
 
-### Introduction
+## Introduction
 
 </n>
 <center>
@@ -72,16 +75,18 @@ cannot be used within this project.
 
 This projected is broken down into the following chapters:
 
-1.  Loading Libraries
-2.  Cleaning the Data
-3.  Exploratory Data Analysis
-4.  Modeling: Random Forrest
-5.  Modeling: Logistic Regression
-6.  Limitations
-7.  Conclusion
+1.  Loading the Libraries
+2.  Loading the Data
+3.  Cleaning the Data
+4.  Exploratory Data Analysis
+5.  Modeling: Random Forest
+6.  Modeling: Logistic Regression
+7.  Limitations
+8.  Conclusion
+9.  Inspiration for this project
 
 A special acknowledgement to the University of California’s Irvine
-online data repository[^3] in which this dataset was recieged. Further,
+online data repository[^3] in which this dataset was recieved. Further,
 a special acknowledgement to Professors Muhammad Zain Amin and Amir Ali
 from the University of Engineering and Technology, Lahore, Pakistan for
 their paper[^4] in which the dataset was created.
@@ -96,7 +101,7 @@ Attribute Information:
 5.  Heart Problem: {1,0}, where 0=apt, 1=inept
 6.  Caesarian {0,1}, where 0=No, 1=Yes
 
-### Loading Libraries
+## Loading the Libraries
 
 ``` r
 #load libraries
@@ -104,10 +109,14 @@ library(tidyverse)
 library(dplyr)
 library(viridis)
 library(MASS)
-library(gganimate)
+#library(gganimate)
 library(randomForest)
 library(caret)
+```
 
+## Loading the Data
+
+``` r
 #store dataset from UCI website into an object
 url <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/00472/caesarian.csv.arff'
 
@@ -143,8 +152,8 @@ data in order make following adjustments for analysis. Let’s view the
 first 25 rows.
 
 ``` r
-#view the first 25 rows of the data
-head(data,25)
+#view the first 15 rows of the data
+head(data,15)
 ```
 
     ##                                    V1   V2  V3  V4 V5 V6 V7 V8 V9 V10 V11 V12
@@ -163,16 +172,6 @@ head(data,25)
     ## 13                                 22    2   0   1  0  1 NA NA NA  NA  NA  NA
     ## 14                                 26    1   1   0  0  0 NA NA NA  NA  NA  NA
     ## 15                                 27    2   0   1  0  0 NA NA NA  NA  NA  NA
-    ## 16                                 32    3   0   1  0  1 NA NA NA  NA  NA  NA
-    ## 17                                 28    2   0   1  0  0 NA NA NA  NA  NA  NA
-    ## 18                                 27    1   1   1  0  1 NA NA NA  NA  NA  NA
-    ## 19                                 36    1   0   1  0  0 NA NA NA  NA  NA  NA
-    ## 20                                 33    1   1   0  0  1 NA NA NA  NA  NA  NA
-    ## 21                                 23    1   1   1  0  0 NA NA NA  NA  NA  NA
-    ## 22                                 20    1   0   1  1  0 NA NA NA  NA  NA  NA
-    ## 23                                 29    1   2   0  1  1 NA NA NA  NA  NA  NA
-    ## 24                                 25    1   2   0  0  0 NA NA NA  NA  NA  NA
-    ## 25                                 25    1   0   1  0  0 NA NA NA  NA  NA  NA
     ##    V13 V14 V15 V16 V17 V18 V19 V20 V21   V22
     ## 1   NA  NA  NA  NA  NA  NA  NA  NA  NA      
     ## 2   24  18  30  40  31  19  21  35  17 38 } 
@@ -188,17 +187,7 @@ head(data,25)
     ## 12  NA  NA  NA  NA  NA  NA  NA  NA  NA      
     ## 13  NA  NA  NA  NA  NA  NA  NA  NA  NA      
     ## 14  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 15  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 16  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 17  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 18  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 19  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 20  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 21  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 22  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 23  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 24  NA  NA  NA  NA  NA  NA  NA  NA  NA      
-    ## 25  NA  NA  NA  NA  NA  NA  NA  NA  NA
+    ## 15  NA  NA  NA  NA  NA  NA  NA  NA  NA
 
 Now, we have a better understanding of the data. The first 8 rows tell
 us what the variables are and how they are noted down in the csv. For
@@ -216,7 +205,7 @@ columns. Then, changing the names of the columns from “V” into their
 proper names. Finally, let’s delete the first 8 rows since they wont be
 necessary.
 
-### Cleaning the Data
+## Cleaning the Data
 
 ``` r
 #Delete columns 7-22; they do not have meaning
@@ -293,7 +282,7 @@ str(data4)
     ##  $ heart_problem : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
     ##  $ caesarian     : Factor w/ 2 levels "0","1": 1 2 1 1 2 1 1 2 1 2 ...
 
-Data4 looks good!
+data4 looks good!
 
 Now, let’s check if dataframe has any NA values through robust methods.
 We can count by sum, also across rows and down columns.
@@ -332,7 +321,7 @@ rowSums(is.na(data4))
 We see that through each of the 3 methods, there are no NAs in our data.
 Thus, the data is now cleaned and ready for exploration. yay!
 
-### Exploratory Data Analysis
+## Exploratory Data Analysis
 
 Now, let’s explore the data.
 
@@ -351,7 +340,7 @@ ggplot(data4, aes(x=age, fill='red')) +
     ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
     ## ℹ Please use `linewidth` instead.
 
-![](Predicting-Caesarian-Births_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](Predicting-Caesarian-Births_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
 mean(data4$age)
@@ -389,7 +378,7 @@ ggplot(data4, aes(x=age, color=caesarian, fill=caesarian)) +
        Process')
 ```
 
-![](Predicting-Caesarian-Births_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](Predicting-Caesarian-Births_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
   #gganimate
@@ -416,7 +405,7 @@ So, let’s run two classification experiments: Random Forests and
 Logisitc Regression. But first, let’s go deeper in the concept of Random
 Forests.
 
-### Modeling: Random Forests
+## Modeling: Random Forests
 
 Random Forests (RF) creates an array of decision trees based on a random
 selection of your data. RF is one way of classification of the dependent
@@ -494,7 +483,9 @@ splitting.
 Now, let’s move onto data splitting. But first, let’s go over briefly on
 why we split the data.
 <center>
+
 ![](https://miro.medium.com/max/656/0*FKrWuLRbB_MiEIKh)
+
 </center>
 
 Recall when predicting classification we need to split the data into
@@ -681,6 +672,7 @@ style="width:50.0%" /> </n>
 Here are a few concepts for AUC and ROC.
 
 </n>
+
 ![](https://www.datasciencecentral.com/wp-content/uploads/2021/10/1341805045.jpg)
 
 </center>
@@ -726,7 +718,7 @@ ROC_rf_AUC <- auc(ROC_rf)
 plot(ROC_rf , main='ROC for Random Forest (Green)', col='green')
 ```
 
-![](Predicting-Caesarian-Births_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](Predicting-Caesarian-Births_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 paste('AUC Random Forrest', ROC_rf_AUC)
@@ -737,7 +729,7 @@ paste('AUC Random Forrest', ROC_rf_AUC)
 Looking at the ROC curve and AUC (96%), it seems our model is excellent
 in classifying caesarian births vs non-caesarian births.
 
-### Modeling: Logistic Regression
+## Modeling: Logistic Regression
 
 In logistic regression we want to predict the probability of an outcome
 from occurring, using the case of 0 (no probable chance; No Caesarian
@@ -1073,7 +1065,7 @@ log_pred3 <- ifelse(log_pred2>0.5, 1, 0)
 #print(table_log2)
 ```
 
-### Limitations
+## Limitations
 
 One limitation from this project is that classification of caesarian
 births are being deployed by two models: Random Forests and Logistic
@@ -1085,9 +1077,11 @@ Another limitation is that with the RF, the default number of trees is
 500. Another followup we can do is fine-tuning where we get the
 appropriate number of trees for the model.
 
-### Conclusion
+## Conclusion
 
 Will finish this section once the above sections are complete.
+
+## Inspiration for this project
 
 [^1]: <https://www.mayoclinic.org/tests-procedures/c-section/about/pac-20393655>.
 
