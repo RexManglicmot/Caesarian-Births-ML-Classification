@@ -17,6 +17,8 @@ Predicting Caesarian Births
     id="toc-modeling-random-forests">Modeling: Random Forests</a>
 -   <a href="#modeling-logistic-regression"
     id="toc-modeling-logistic-regression">Modeling: Logistic Regression</a>
+    -   <a href="#pros" id="toc-pros">Pros</a>
+    -   <a href="#cons" id="toc-cons">Cons</a>
 -   <a href="#limitations" id="toc-limitations">Limitations</a>
 -   <a href="#conclusion" id="toc-conclusion">Conclusion</a>
 -   <a href="#inspiration-for-this-project"
@@ -746,10 +748,26 @@ The reason why a linear regression is not the best choice because:
     variable.
 
 Because we want to stay between 0 and 1, we want to use a logistic
-function, which has a sigmoidal curve because of the shape, if an
-observation is \>50% of the curve, it will be classified as 1 (definite
-chance) and if an observation is \<50% of the curve, it will be
-classified as 0 (no probable chance).
+function, which has a sigmoidal curve (see figure below) because of the
+shape, if an observation is \>50% of the curve, it will be classified as
+1 (definite chance) and if an observation is \<50% of the curve, it will
+be classified as 0 (no probable chance).
+
+![](https://media.geeksforgeeks.org/wp-content/uploads/20200522215734/download35.jpg)
+
+### Pros
+
+-   Easy to implement and understand
+-   Takes no assumption of the distributions of classes in feature space
+-   Good accuracy for simple data sets
+-   Interpret which coefficients are indicators of feature importance.
+
+### Cons
+
+-   Constructs linear boundaries.
+-   Assumption of linearity between DV and IVs
+-   Useful for discrete functions
+-   Requires average or no multicollinearity between IVs
 
 Similar to multiple linear regression, logistic regressions work with
 continuous data and discrete data (needs to be converted into a factor).
