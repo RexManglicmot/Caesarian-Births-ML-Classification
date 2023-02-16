@@ -11,7 +11,7 @@ Hi everyone. I'm continuing building my data analysis and R skills. As such, I w
 
 Things still need to do/Questions:
 
-* Figure out **BUG** in Logistic Regression Code and afterwards do analysis of the model.
+* Figure out **BUG** in Bindary Logistic Regression Code and afterwards do analysis of the model.
 * Ask for feedback on model and incorporate feedback.
 * Fill in missing sections to round out project.
 * Put in more theory on Random Forests and Logistic Regression + illustrations
@@ -208,18 +208,24 @@ Random Forests (RF) creates an array of decision trees based on a random selecti
 ![](https://www.tibco.com/sites/tibco/files/media_entity/2021-05/random-forest-diagram.svg){width=50%}
 </center>
 
-The theory behind this is that many of the trees are making correct predictions for most of the data, and that some of the trees are making mistakes at different parts of the tree. For example, if there are a total of 5 Trees, and if Tree1-4 predicts the classification to be "A" 4 times and Tree 5 predicsd classification to be "B" 1 time, then the correct classification of the dependent variable is likely to be A than B, 4:1. In essence, RF predicts classification based on **majority votes** of the trees.
+The theory behind this is that many of the trees are making correct predictions for most of the data, and that some of the trees are making mistakes at different parts of the tree. For example, if there are a total of 5 Trees, and if Tree1-4 predicts the classification to be "A" 4 times and Tree 5 predict classification to be "B" 1 time, then the correct classification of the dependent variable is likely to be A than B, 4:1. In essence, RF predicts classification based on **majority votes** of the trees.
 
 The great aspect of RF is that it avoids overfitting, where the model pays great attention to specific details of the dataset that it was specifically trained on and as a result the model predicts well on the training data, but not predict so well on the test data (which is the point of RF).
 
-With our data, we run a Random Forrest to see of this model correctly predicts whether or not a women has a caesarian procedure. Because the dependent vraible is a factor, we can do classification. (If the dependent variable was continuous, we can do a regression; this is not the case.)
+With our data, we run a Random Forrest to see of this model correctly predicts whether or not a women has a caesarian procedure. Because the dependent variable is a factor, we can do classification. (If the dependent variable was continuous, we can do a regression; this is not the case.)
+
+### Applications
+
+### Pros
+
+### Cons
 
 Recall that: 
 
 * 0 = No Caesarian Birth
 * 1 = Caesarian Birth
 
-Let's look at the data one more time.
+Now, let's look at the data one more time.
 ```{r}
 #look at the data again to see the structure of it
 str(data4)
@@ -345,7 +351,7 @@ paste('AUC Random Forrest', ROC_rf_AUC)
 ```
 Looking at the ROC curve and AUC (96%), it seems our model is excellent in classifying caesarian births vs non-caesarian births. 
 
-## Modeling: Logistic Regression
+## Modeling: Binary Logistic Regression
 In logistic regression we want to predict the probability of an outcome from occurring, using the case of 0 (no probable chance; No Caesarian Births) to 1 (definite chance; Caesarian Births).
 
 The reason why a linear regression is not the best choice because:
@@ -354,9 +360,19 @@ The reason why a linear regression is not the best choice because:
 2. The regression line would go beyond plus and minus infinity and not reflect the probability of occurrence, which is defined between 0 and 1.
 3. The goal of logistic regression is not to estimate the value of the variable. 
 
-Because we want to stay between 0 and 1, we want to use a logistic function, which has a sigmoidal curve (see figure below) because of the shape, if an observation is >50% of the curve, it will be classified as 1 (definite chance) and if an observation is <50% of the curve, it will be classified as 0 (no probable chance).
+Because we want to stay between 0 and 1, we want to use a logistic function, which has a sigmoidal curve (see figure below) because of the shape, if an observation is >50% of the curve, it will be classified as 1 (definite chance) and if an observation is <50% of the curve, it will be classified as 0 (no probable chance). The binary is typically at 50, however, this can change contigent on the research question. 
 
 ![](https://media.geeksforgeeks.org/wp-content/uploads/20200522215734/download35.jpg)
+
+### Applications (Binary)
+
+The are a vast amount of uses for logistic regressions. For example,
+
+* Predict if a tumor is benign or malignant?
+* Will the customer fail to to make minimum monthly payment on time?
+* Will the customer try a new Starbucks beverage?
+
+There are two other types of logistic regressions: multinomial and ordinal, where there are multple outcomes and tnd if the outcome is ordered, respectively. These regressions are not discussed here, but are available through other projects within overall GitHub repository. 
 
 ### Pros
 

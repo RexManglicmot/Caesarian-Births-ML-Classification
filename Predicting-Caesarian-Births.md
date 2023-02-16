@@ -15,10 +15,16 @@ Predicting Caesarian Births
     id="toc-exploratory-data-analysis">Exploratory Data Analysis</a>
 -   <a href="#modeling-random-forests"
     id="toc-modeling-random-forests">Modeling: Random Forests</a>
--   <a href="#modeling-logistic-regression"
-    id="toc-modeling-logistic-regression">Modeling: Logistic Regression</a>
+    -   <a href="#applications" id="toc-applications">Applications</a>
     -   <a href="#pros" id="toc-pros">Pros</a>
     -   <a href="#cons" id="toc-cons">Cons</a>
+-   <a href="#modeling-binary-logistic-regression"
+    id="toc-modeling-binary-logistic-regression">Modeling: Binary Logistic
+    Regression</a>
+    -   <a href="#applications-binary" id="toc-applications-binary">Applications
+        (Binary)</a>
+    -   <a href="#pros-1" id="toc-pros-1">Pros</a>
+    -   <a href="#cons-1" id="toc-cons-1">Cons</a>
 -   <a href="#limitations" id="toc-limitations">Limitations</a>
 -   <a href="#conclusion" id="toc-conclusion">Conclusion</a>
 -   <a href="#inspiration-for-this-project"
@@ -33,8 +39,8 @@ data are my own.
 
 Things still need to do/Questions:
 
--   Figure out **BUG** in Logistic Regression Code and afterwards do
-    analysis of the model.
+-   Figure out **BUG** in Bindary Logistic Regression Code and
+    afterwards do analysis of the model.
 -   Ask for feedback on model and incorporate feedback.
 -   Fill in missing sections to round out project.
 -   Put in more theory on Random Forests and Logistic Regression +
@@ -426,7 +432,7 @@ The theory behind this is that many of the trees are making correct
 predictions for most of the data, and that some of the trees are making
 mistakes at different parts of the tree. For example, if there are a
 total of 5 Trees, and if Tree1-4 predicts the classification to be “A” 4
-times and Tree 5 predicsd classification to be “B” 1 time, then the
+times and Tree 5 predict classification to be “B” 1 time, then the
 correct classification of the dependent variable is likely to be A than
 B, 4:1. In essence, RF predicts classification based on **majority
 votes** of the trees.
@@ -439,16 +445,22 @@ point of RF).
 
 With our data, we run a Random Forrest to see of this model correctly
 predicts whether or not a women has a caesarian procedure. Because the
-dependent vraible is a factor, we can do classification. (If the
+dependent variable is a factor, we can do classification. (If the
 dependent variable was continuous, we can do a regression; this is not
 the case.)
+
+### Applications
+
+### Pros
+
+### Cons
 
 Recall that:
 
 -   0 = No Caesarian Birth
 -   1 = Caesarian Birth
 
-Let’s look at the data one more time.
+Now, let’s look at the data one more time.
 
 ``` r
 #look at the data again to see the structure of it
@@ -731,7 +743,7 @@ paste('AUC Random Forrest', ROC_rf_AUC)
 Looking at the ROC curve and AUC (96%), it seems our model is excellent
 in classifying caesarian births vs non-caesarian births.
 
-## Modeling: Logistic Regression
+## Modeling: Binary Logistic Regression
 
 In logistic regression we want to predict the probability of an outcome
 from occurring, using the case of 0 (no probable chance; No Caesarian
@@ -751,9 +763,23 @@ Because we want to stay between 0 and 1, we want to use a logistic
 function, which has a sigmoidal curve (see figure below) because of the
 shape, if an observation is \>50% of the curve, it will be classified as
 1 (definite chance) and if an observation is \<50% of the curve, it will
-be classified as 0 (no probable chance).
+be classified as 0 (no probable chance). The binary is typically at 50,
+however, this can change contigent on the research question.
 
 ![](https://media.geeksforgeeks.org/wp-content/uploads/20200522215734/download35.jpg)
+
+### Applications (Binary)
+
+The are a vast amount of uses for logistic regressions. For example,
+
+-   Predict if a tumor is benign or malignant?
+-   Will the customer fail to to make minimum monthly payment on time?
+-   Will the customer try a new Starbucks beverage?
+
+There are two other types of logistic regressions: multinomial and
+ordinal, where there are multple outcomes and tnd if the outcome is
+ordered, respectively. These regressions are not discussed here, but are
+available through other projects within overall GitHub repository.
 
 ### Pros
 
