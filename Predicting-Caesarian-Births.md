@@ -451,25 +451,44 @@ the case.)
 
 ### Applications
 
+RFs are used in a wide range of industries such as:
+
+-   Banking industry to detect who will use bank’s services most
+    frequently.
+-   Healthcare industry into patient’s medical history and predict
+    likely diseases.
+-   Pharmaceutical industry to predict drug sensitivity of a medicine.
+
 ### Pros
 
 -   Reduced risk of overfitting. When a single decision tree is made,
-    there is a possibly to fir all the observations in the training
+    there is a possibly to for all the observations in the training
     data, but with RF, it helps alleviate that since averaging
     uncorrelated tress decreases both variance and prediction error.
 -   Easy to decide feature importance.
+-   No scaling or transformation of the data is needed, and thus use
+    data set as is.
+-   RFs has a lower variance than a single decision tree.
+-   Maintains good accuracy even with significant amount of data
+    missing.
 
 ### Cons
 
 -   Works best with large datasets, thus datasets that are small do not
     yield significant results.
+-   Found to yield biased results when dealing with categorical
+    variables.
+-   RFs algo requires more computational power to run.
+-   Prediction takes a longer time compared to other algos.
+-   Little control over the algo, it is sometimes treated as a “black
+    box” algo.
+
+Now, let’s look at the data one more time.
 
 Recall that:
 
 -   0 = No Caesarian Birth
 -   1 = Caesarian Birth
-
-Now, let’s look at the data one more time.
 
 ``` r
 #look at the data again to see the structure of it
