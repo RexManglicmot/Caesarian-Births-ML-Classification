@@ -453,7 +453,16 @@ the case.)
 
 ### Pros
 
+-   Reduced risk of overfitting. When a single decision tree is made,
+    there is a possibly to fir all the observations in the training
+    data, but with RF, it helps alleviate that since averaging
+    uncorrelated tress decreases both variance and prediction error.
+-   Easy to decide feature importance.
+
 ### Cons
+
+-   Works best with large datasets, thus datasets that are small do not
+    yield significant results.
 
 Recall that:
 
